@@ -6,7 +6,7 @@ namespace Thermo_Server_Domain.DTO
 {
     public class RaspiTemp
     {
-        public string SensorId { get; set; }
+        public string Id { get; set; }
         public float Temp { get; set; }
     }
 }
