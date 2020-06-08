@@ -4,10 +4,10 @@ using System.Text;
 
 namespace Thermo_Server_Domain.DTO
 {
-    public class RaspiTemp
+    public class DtoTemp
     {
-        public string UserKey { get; set; }
-        public string HardwareId { get; set; }
+        public string Name { get; set; }
         public float Value { get; set; }
+        public DateTime Time { get; set; }
     }
 }

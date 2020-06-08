@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using Thermo_Server_Domain.DTO;
 using Thermo_Server_Domain.Model;
 using Thermo_Server_Raspberry;
-using Thermo_Server_Raspberry.Temperature;
 
 namespace Thermo_Server_WebApi.Controllers
 {
@@ -17,31 +16,30 @@ namespace Thermo_Server_WebApi.Controllers
     [ApiController]
     public class RaspiController : ControllerBase
     {
-        private readonly ILogger _logger;
-        private readonly DomainContext _context;
         private readonly UserConfigurating _userConfigurating;
+        private readonly TemperatureService _temperatureService;
 
-        public RaspiController(ILogger<RaspiController> logger, DomainContext context, UserConfigurating userConfigurating)
+        public RaspiController(UserConfigurating userConfigurating, TemperatureService temperatureService)
         {
-            _logger = logger;
-            _context = context;
             _userConfigurating = userConfigurating;
+            _temperatureService = temperatureService;
         }
 
         /// <summary>Adds temperature to db</summary>
         /// <remarks>Sample request: 
         /// 
         ///     POST {
-        ///         "UserId": 1,
+        ///         "UserKey": "TestUser",
         ///         "HardwareId": "human",
-        ///         "Temp" : 36.6
+        ///         "Value" : 36.6
         ///     }
         ///     
         /// </remarks>
         [HttpPost("Temp")]
-        public async Task<ActionResult<RaspiTemp>> PostTemp(RaspiTemp temp)
+        public async Task<ActionResult> PostTemp(RaspiTemp temp)
         {
-            return temp;
+            await _temperatureService.AddTemperature(temp);
+            return Ok();
         }
 
         /// <summary>Adds user to db, returns user id</summary>

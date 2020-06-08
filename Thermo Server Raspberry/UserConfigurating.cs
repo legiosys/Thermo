@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 
-namespace Thermo_Server_Raspberry.Temperature
+namespace Thermo_Server_Raspberry
 {
     public class UserConfigurating
     {

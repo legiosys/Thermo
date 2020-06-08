@@ -15,7 +15,7 @@ using System.Reflection;
 using System.IO;
 using Thermo_Server_Domain.Model;
 using Microsoft.EntityFrameworkCore;
-using Thermo_Server_Raspberry.Temperature;
+using Thermo_Server_Raspberry;
 
 namespace Thermo_Server_WebApi
 {
@@ -33,6 +33,7 @@ namespace Thermo_Server_WebApi
         {
             services.AddDbContext<DomainContext>(opt => opt.UseInMemoryDatabase("webapi"));
             services.AddTransient<UserConfigurating>();
+            services.AddTransient<TemperatureService>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
