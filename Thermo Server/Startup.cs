@@ -13,8 +13,11 @@ using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using System.IO;
+using Thermo_Server_Domain.Model;
+using Microsoft.EntityFrameworkCore;
+using Thermo_Server_Raspberry.Temperature;
 
-namespace Thermo_Server
+namespace Thermo_Server_WebApi
 {
     public class Startup
     {
@@ -28,6 +31,8 @@ namespace Thermo_Server
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<DomainContext>(opt => opt.UseInMemoryDatabase("webapi"));
+            services.AddTransient<UserConfigurating>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

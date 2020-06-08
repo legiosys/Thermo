@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Thermo_Server
+namespace Thermo_Server_WebApi
 {
     public class Program
     {

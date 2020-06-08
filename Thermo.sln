@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thermo Server WebApi", "The
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thermo Server Domain", "Thermo Server Domain\Thermo Server Domain.csproj", "{864AED78-6402-40A3-9643-1824BDB4FF4A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thermo Server Raspberry", "Thermo Server Raspberry\Thermo Server Raspberry.csproj", "{09FCDFD6-79FA-47A3-840C-6F4702D326D0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{864AED78-6402-40A3-9643-1824BDB4FF4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{864AED78-6402-40A3-9643-1824BDB4FF4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{864AED78-6402-40A3-9643-1824BDB4FF4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09FCDFD6-79FA-47A3-840C-6F4702D326D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09FCDFD6-79FA-47A3-840C-6F4702D326D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09FCDFD6-79FA-47A3-840C-6F4702D326D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09FCDFD6-79FA-47A3-840C-6F4702D326D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
