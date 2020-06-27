@@ -24,6 +24,7 @@ namespace Thermo_Server_WebApi
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            
         }
 
         public IConfiguration Configuration { get; }
@@ -31,7 +32,8 @@ namespace Thermo_Server_WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DomainContext>(opt => opt.UseInMemoryDatabase("webapi"));
+            services.AddDbContext<DomainContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("WebApi")));
+            //services.AddDbContext<DomainContext>(opt => opt.UseInMemoryDatabase("webapi"));
             services.AddTransient<UserConfigurating>();
             services.AddTransient<TemperatureService>();
             services.AddControllers();
@@ -47,8 +49,9 @@ namespace Thermo_Server_WebApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DomainContext context)
         {
+            context.Database.Migrate();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -61,7 +64,7 @@ namespace Thermo_Server_WebApi
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Thermo API V1");
             });
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 

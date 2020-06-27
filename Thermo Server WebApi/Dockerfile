@@ -7,16 +7,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY ["Thermo Server/Thermo Server.csproj", "Thermo Server/"]
-RUN dotnet restore "Thermo Server/Thermo Server.csproj"
+COPY ["Thermo Server WebApi/Thermo Server WebApi.csproj", "Thermo Server WebApi/"]
+RUN dotnet restore "Thermo Server WebApi/Thermo Server WebApi.csproj"
 COPY . .
-WORKDIR "/src/Thermo Server"
-RUN dotnet build "Thermo Server.csproj" -c Release -o /app/build
+WORKDIR "/src/Thermo Server WebApi"
+RUN dotnet build "Thermo Server WebApi.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Thermo Server.csproj" -c Release -o /app/publish
+RUN dotnet publish "Thermo Server WebApi.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Thermo Server.dll"]
+ENTRYPOINT ["dotnet", "Thermo Server WebApi.dll"]
