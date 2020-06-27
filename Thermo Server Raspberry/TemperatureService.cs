@@ -26,10 +26,15 @@ namespace Thermo_Server_Raspberry
             temp.Time = DateTime.Now;
             var sensor = await _context.Sensors.FirstOrDefaultAsync(
                 s => s.HardwareId.Equals(raspiTemp.HardwareId) && s.User.UserKey.Equals(raspiTemp.UserKey));
-            if (sensor == null) throw new Exception("BAD SENSOR");
+            if (sensor == null)
+            {
+                _logger.LogError($"AddTemperature:Sensor {raspiTemp.UserKey}/{raspiTemp.HardwareId} doesn't exist!");
+                throw new Exception("BAD SENSOR");
+            }
             await _context.Entry(sensor).Collection(s => s.Temperatures).LoadAsync();
             sensor.Temperatures.Add(temp);
             await _context.SaveChangesAsync();
+            _logger.LogInformation($"AddTemperature:Sensor {raspiTemp.UserKey}/{raspiTemp.HardwareId} added temperature {raspiTemp.Value}.");
         }
 
         public async Task<List<DtoTemp>> GetTemperatures(string userKey)

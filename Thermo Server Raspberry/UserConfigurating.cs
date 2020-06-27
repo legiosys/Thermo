@@ -24,7 +24,11 @@ namespace Thermo_Server_Raspberry
                 u => u.UserKey.Equals(key));
             if (user != null)
                 return user.UserId;
-            else return -1;
+            else
+            {
+                _logger.LogInformation($"GetUser:User '{key}' doesn't exist.");
+                return -1;
+            }
         }
         public async Task<int> AddUser(DtoUser dtoUser)
         {
@@ -35,11 +39,12 @@ namespace Thermo_Server_Raspberry
             {
                 user = new User();
                 user.UserKey = dtoUser.UserKey;
-                user.Sensors = sensors;
                 _context.Users.Add(user);
+                _logger.LogInformation($"AddUser:User '{dtoUser.UserKey}' created.");
             }
             user.Sensors = sensors;
             await _context.SaveChangesAsync();
+            _logger.LogInformation($"AddUser:User '{dtoUser.UserKey}' installed sensors: {string.Join(',', dtoUser.Sensors)}.");
             return user.UserId;
         }
 

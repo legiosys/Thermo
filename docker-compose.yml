@@ -1,0 +1,15 @@
+﻿version: "3"
+services:
+    web:
+        build: 
+            context: .
+        ports:
+            - "8001:443"
+            - "8000:80"
+        depends_on:
+            - db
+    db:
+        image: "microsoft/mssql-server-linux:2017-latest"
+        environment:
+            SA_PASSWORD: "Passw0rd!"
+            ACCEPT_EULA: "Y"
