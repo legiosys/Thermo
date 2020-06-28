@@ -3,12 +3,17 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Flurl.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace Thermo_Raspberry_Pi.Web
 {
     public class Sender : ISender
     {
-        public string BaseUrl = "http://localhost:8000/Raspi/";
+        private readonly string BaseUrl;
+        public Sender(IConfiguration configuration)
+        {
+            BaseUrl = configuration.GetValue<string>("Url");
+        }
         public async Task AddTemperature(string userKey, IEnumerable<Temperature> temperatures)
         {
             var url = string.Concat(BaseUrl, "Temp");
