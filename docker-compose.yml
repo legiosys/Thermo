@@ -4,7 +4,6 @@ services:
         build: 
             context: .
         ports:
-            - "8001:443"
             - "8000:80"
         depends_on:
             - db
