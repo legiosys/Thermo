@@ -6,16 +6,13 @@ using Flurl.Http;
 
 namespace Thermo_Raspberry_Pi.Web
 {
-    public class Sender : IConnector
+    public class Sender : ISender
     {
         public string BaseUrl = "http://localhost:8000/Raspi/";
         public async Task AddTemperature(string userKey, IEnumerable<Temperature> temperatures)
         {
             var url = string.Concat(BaseUrl, "Temp");
-            foreach(var temp in temperatures)
-            {
-                await url.PostJsonAsync(new { UserKey = userKey, temp.HardwareId, temp.Value });
-            }
+            await url.PostJsonAsync(new { UserKey = userKey, Sensors = temperatures });           
         }
 
         public async Task<int> CheckUser(string user)

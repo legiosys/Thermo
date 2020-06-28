@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,14 +18,9 @@ namespace Thermo_Raspberry_Pi
         {
             ServiceCollection services = new ServiceCollection();
             ConfigureServices(services);
-
-            var temp = new MockSensor();
-            var web = new Sender();
-            var url = configuration.GetSection("Url");
-            Console.WriteLine(url.Value);
-            //await web.AddUser("TestUser", temp.GetSensors());
-            //await web.AddTemperature("TestUser", temp.GetTemperatures());
-            //Check(temp);
+            var mainService = services.BuildServiceProvider().GetService<MainService>();
+            await mainService.CheckUserExistance();
+            mainService.Run();
         }
         private static void ConfigureServices(IServiceCollection serviceCollection)
         {            
@@ -34,7 +30,10 @@ namespace Thermo_Raspberry_Pi
                 .AddJsonFile("appsettings.json", false)
                 .Build();
             serviceCollection.AddSingleton<IConfiguration>(configuration);
-
+            serviceCollection.AddLogging(l => l.AddConsole());
+            serviceCollection.AddTransient<ISensor, MockSensor>();
+            serviceCollection.AddTransient<ISender, Sender>();
+            serviceCollection.AddSingleton<MainService>();
         }
     }
 }
