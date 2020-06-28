@@ -19,24 +19,24 @@ namespace Thermo_Server_Raspberry
             _logger = logger;
         }
 
-        public async Task AddTemperature(IEnumerable<RaspiTemp> raspiTemp)
-        {
-            foreach(var rTemp in raspiTemp)
+        public async Task AddTemperature(RaspiTemp raspiTemp)
+        {           
+            foreach(var rTemp in raspiTemp.Sensors)
             {
                 var temp = new Temperature();
                 temp.Value = rTemp.Value;
                 temp.Time = DateTime.Now;
                 var sensor = await _context.Sensors.FirstOrDefaultAsync(
-                s => s.HardwareId.Equals(rTemp.HardwareId) && s.User.UserKey.Equals(rTemp.UserKey));
+                s => s.HardwareId.Equals(rTemp.HardwareId) && s.User.UserKey.Equals(raspiTemp.UserKey));
                 if (sensor == null)
                 {
-                    _logger.LogError($"AddTemperature:Sensor {rTemp.UserKey}/{rTemp.HardwareId} doesn't exist!");
+                    _logger.LogError($"AddTemperature:Sensor {raspiTemp.UserKey}/{rTemp.HardwareId} doesn't exist!");
                     throw new Exception("BAD SENSOR");
                 }
                 await _context.Entry(sensor).Collection(s => s.Temperatures).LoadAsync();
                 sensor.Temperatures.Add(temp);
                 await _context.SaveChangesAsync();
-                _logger.LogInformation($"AddTemperature:Sensor {rTemp.UserKey}/{rTemp.HardwareId} added temperature {rTemp.Value}.");
+                _logger.LogInformation($"AddTemperature:Sensor {raspiTemp.UserKey}/{rTemp.HardwareId} added temperature {rTemp.Value}.");
             }                      
         }
 
