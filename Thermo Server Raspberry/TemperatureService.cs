@@ -19,22 +19,25 @@ namespace Thermo_Server_Raspberry
             _logger = logger;
         }
 
-        public async Task AddTemperature(RaspiTemp raspiTemp)
+        public async Task AddTemperature(IEnumerable<RaspiTemp> raspiTemp)
         {
-            var temp = new Temperature();
-            temp.Value = raspiTemp.Value;
-            temp.Time = DateTime.Now;
-            var sensor = await _context.Sensors.FirstOrDefaultAsync(
-                s => s.HardwareId.Equals(raspiTemp.HardwareId) && s.User.UserKey.Equals(raspiTemp.UserKey));
-            if (sensor == null)
+            foreach(var rTemp in raspiTemp)
             {
-                _logger.LogError($"AddTemperature:Sensor {raspiTemp.UserKey}/{raspiTemp.HardwareId} doesn't exist!");
-                throw new Exception("BAD SENSOR");
-            }
-            await _context.Entry(sensor).Collection(s => s.Temperatures).LoadAsync();
-            sensor.Temperatures.Add(temp);
-            await _context.SaveChangesAsync();
-            _logger.LogInformation($"AddTemperature:Sensor {raspiTemp.UserKey}/{raspiTemp.HardwareId} added temperature {raspiTemp.Value}.");
+                var temp = new Temperature();
+                temp.Value = rTemp.Value;
+                temp.Time = DateTime.Now;
+                var sensor = await _context.Sensors.FirstOrDefaultAsync(
+                s => s.HardwareId.Equals(rTemp.HardwareId) && s.User.UserKey.Equals(rTemp.UserKey));
+                if (sensor == null)
+                {
+                    _logger.LogError($"AddTemperature:Sensor {rTemp.UserKey}/{rTemp.HardwareId} doesn't exist!");
+                    throw new Exception("BAD SENSOR");
+                }
+                await _context.Entry(sensor).Collection(s => s.Temperatures).LoadAsync();
+                sensor.Temperatures.Add(temp);
+                await _context.SaveChangesAsync();
+                _logger.LogInformation($"AddTemperature:Sensor {rTemp.UserKey}/{rTemp.HardwareId} added temperature {rTemp.Value}.");
+            }                      
         }
 
         public async Task<List<DtoTemp>> GetTemperatures(string userKey)
