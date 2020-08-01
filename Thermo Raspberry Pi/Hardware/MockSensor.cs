@@ -21,5 +21,10 @@ namespace Thermo_Raspberry_Pi.Hardware
             yield return "Human";
             yield return "Dog";
         }
+
+        public string GetSerial()
+        {
+            return "TestUser";
+        }
     }
 }

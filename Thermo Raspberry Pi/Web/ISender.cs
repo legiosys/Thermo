@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Thermo_Raspberry_Pi.Web
 {
-    public interface IConnector
+    public interface ISender
     {
         public Task AddTemperature(string userKey, IEnumerable<Temperature> temps);
         public Task<int> CheckUser(string user);
