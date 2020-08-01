@@ -8,5 +8,6 @@ namespace Thermo_Raspberry_Pi.Hardware
     {
         public IEnumerable<Temperature> GetTemperatures();
         public IEnumerable<string> GetSensors();
+        public string GetSerial();
     }
 }
