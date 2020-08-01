@@ -33,15 +33,7 @@ namespace Thermo_Raspberry_Pi.Web
         public async Task<int> CheckUser(string user)
         {
             var url = string.Concat(BaseUrl, "User/", user);
-            try
-            {
-                return await url.GetJsonAsync<int>();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message);
-                return -1;
-            }
+            return await url.GetJsonAsync<int>();
         }
 
         public async Task AddUser(string userKey, IEnumerable<string> sensors)

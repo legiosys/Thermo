@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,8 +15,8 @@ namespace Thermo_Raspberry_Pi
         private readonly ISensor _sensor;
         private readonly ISender _sender;
         private readonly ILogger _logger;
-        private bool _work = true;
-        private readonly string UserKey = "TestUser";
+        private bool _work = false;
+        private string UserKey = "TestUser";
         public MainService(ISensor sensor, ISender sender, ILogger<MainService> logger )
         {
             _sensor = sensor;
@@ -23,26 +24,68 @@ namespace Thermo_Raspberry_Pi
             _logger = logger;
         }
 
-        public void Run()
-        {            
+        public async Task Run()
+        {
+            await CheckEnvironment();
             while(_work)
             {
                 var temps = _sensor.GetTemperatures();
-                _sender.AddTemperature(UserKey, temps);
+                await _sender.AddTemperature(UserKey, temps);
                 _logger.LogInformation("Temperature sended!");
                 Thread.Sleep(1 * 60 * 1000);
             }
         }
-        
-        public async Task CheckUserExistance()
+
+        public async Task CheckEnvironment()
         {
-            if (await _sender.CheckUser(UserKey) < 0)
+            if (CheckSensorsState() &&
+                await CheckUserExistance())
+                _work = true;
+            await Task.Delay(1000);
+        }
+
+        private bool CheckSensorsState()
+        {
+            try
             {
-                await _sender.AddUser(UserKey, _sensor.GetSensors());
-                _logger.LogInformation("User created, starting...");
+                UserKey = _sensor.GetSerial();
+                var sensors = _sensor.GetSensors();
+                if (sensors == null || sensors.Count() == 0)
+                    throw new Exception("Sensors not exist!");
+                if (sensors.Any(x => string.IsNullOrWhiteSpace(x)))
+                    throw new Exception("Bad sensors exist!");
+                if (_sensor.GetTemperatures().Any(x => float.IsNaN(x.Value)))
+                    throw new Exception("Bad sensor temp");
             }
-            else
-                _logger.LogInformation("User exists, starting...");
+            catch(Exception e)
+            {
+                _logger.LogError(e.Message + "\n" + e.StackTrace);
+                return false;
+            }
+            _logger.LogInformation("Sensors passed check.");
+            return true;
+           
+        }
+        
+        private async Task<bool> CheckUserExistance()
+        {
+            _logger.LogInformation("Checking connection to server");
+            try
+            {
+                if (await _sender.CheckUser(UserKey) < 0)
+                {
+                    await _sender.AddUser(UserKey, _sensor.GetSensors());
+                    _logger.LogInformation("User created, starting...");
+                }
+                else
+                    _logger.LogInformation("User exists, starting...");
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message + "\n" + e.StackTrace);
+                return false;
+            }
+            return true;
 
         }
     }

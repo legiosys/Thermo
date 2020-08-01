@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Thermo_Raspberry_Pi.Hardware;
+using Thermo_Raspberry_Pi.Services;
 using Thermo_Raspberry_Pi.Web;
 
 namespace Thermo_Raspberry_Pi
@@ -14,13 +15,12 @@ namespace Thermo_Raspberry_Pi
     class Program
     {
         public static IConfiguration configuration;
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
             ServiceCollection services = new ServiceCollection();
             ConfigureServices(services);
             var mainService = services.BuildServiceProvider().GetService<MainService>();
-            await mainService.CheckUserExistance();
-            mainService.Run();
+            mainService.Run().Wait();
         }
         private static void ConfigureServices(IServiceCollection serviceCollection)
         {            
@@ -31,7 +31,8 @@ namespace Thermo_Raspberry_Pi
                 .Build();
             serviceCollection.AddSingleton<IConfiguration>(configuration);
             serviceCollection.AddLogging(l => l.AddConsole());
-            serviceCollection.AddTransient<ISensor, MockSensor>();
+            serviceCollection.AddScoped<FileSystemService>();
+            serviceCollection.AddTransient<ISensor, Sensor>();
             serviceCollection.AddTransient<ISender, Sender>();
             serviceCollection.AddSingleton<MainService>();
         }
