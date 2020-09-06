@@ -28,15 +28,16 @@ namespace Thermo_Server_WebApi.Controllers
         /// <summary>Adds temperature to db</summary>
         /// <remarks>Sample request: 
         /// 
-        ///     POST [{
-        ///         "UserKey": "TestUser",
-        ///         "HardwareId": "human",
-        ///         "Value" : 36.6
-        ///     }]
+        ///     POST { "UserKey": "TestUser",
+        ///            "Sensors": [{    
+        ///                 "HardwareId": "human",
+        ///                 "Value" : 36.6
+        ///            }]
+        ///     }
         ///     
         /// </remarks>
         [HttpPost("Temp")]
-        public async Task<ActionResult> PostTemp(IEnumerable<RaspiTemp> temps)
+        public async Task<ActionResult> PostTemp(RaspiTemp temps)
         {
             await _temperatureService.AddTemperature(temps);
             return Ok();
