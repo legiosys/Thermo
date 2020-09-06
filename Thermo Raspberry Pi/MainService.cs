@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,23 +16,26 @@ namespace Thermo_Raspberry_Pi
         private readonly ISensor _sensor;
         private readonly ISender _sender;
         private readonly ILogger _logger;
+        private readonly IConfiguration _configuration;
         private bool _work = false;
         private string UserKey = "TestUser";
-        public MainService(ISensor sensor, ISender sender, ILogger<MainService> logger )
+        public MainService(ISensor sensor, ISender sender, ILogger<MainService> logger, IConfiguration configuration)
         {
             _sensor = sensor;
             _sender = sender;
             _logger = logger;
+            _configuration = configuration;
         }
 
         public async Task Run()
         {
             await CheckEnvironment();
+            var frequency = _configuration.GetValue<int>("SendFrequency");
             while(_work)
             {
                 var temps = _sensor.GetTemperatures();
                 await _sender.AddTemperature(UserKey, temps);
-                Thread.Sleep(1 * 60 * 1000);
+                await Task.Delay(frequency * 60 * 1000);
             }
         }
 
