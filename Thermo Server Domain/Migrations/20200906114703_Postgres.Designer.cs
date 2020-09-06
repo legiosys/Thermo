@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Thermo_Server_Domain.Model;
@@ -9,9 +10,10 @@ using Thermo_Server_Domain.Model;
 namespace Thermo_Server_Domain.Migrations
 {
     [DbContext(typeof(DomainContext))]
-    partial class DomainContextModelSnapshot : ModelSnapshot
+    [Migration("20200906114703_Postgres")]
+    partial class Postgres
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

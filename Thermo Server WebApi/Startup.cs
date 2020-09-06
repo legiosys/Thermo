@@ -32,7 +32,7 @@ namespace Thermo_Server_WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DomainContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("WebApi")));
+            services.AddDbContext<DomainContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("WebApi")));
             //services.AddDbContext<DomainContext>(opt => opt.UseInMemoryDatabase("webapi"));
             services.AddTransient<UserConfigurating>();
             services.AddTransient<TemperatureService>();
