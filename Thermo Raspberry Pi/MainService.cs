@@ -31,7 +31,6 @@ namespace Thermo_Raspberry_Pi
             {
                 var temps = _sensor.GetTemperatures();
                 await _sender.AddTemperature(UserKey, temps);
-                _logger.LogInformation("Temperature sended!");
                 Thread.Sleep(1 * 60 * 1000);
             }
         }

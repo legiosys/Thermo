@@ -22,7 +22,9 @@ namespace Thermo_Raspberry_Pi.Web
             var url = string.Concat(BaseUrl, "Temp");
             try
             {
-                await url.PostJsonAsync(new { UserKey = userKey, Sensors = temperatures });
+                var data =  new { UserKey = userKey, Sensors = temperatures };
+                await url.PostJsonAsync(data);
+                _logger.LogInformation("Temperature sended!");
             }
             catch(Exception e)
             {
